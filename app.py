@@ -10,7 +10,7 @@ st.markdown("---")
 if "GEMINI_API_KEY" in st.secrets:
     api_key = st.secrets["GEMINI_API_KEY"]
 else:
-    st.sidebar.warning("API Key not found in Secrets! Please add it in Streamlit settings.")
+    st.sidebar.error("API Key not found in Secrets!")
     api_key = None
 
 if api_key:
@@ -19,8 +19,8 @@ if api_key:
         
         if "messages" not in st.session_state:
             st.session_state.messages = []
-            # শুরুর মেসেজ
-            st.session_state.messages.append({"role": "assistant", "content": "হ্যালো! আমি LumiAI। আমাকে তৈরি করেছেন সাব্বির আহমেদ। আমি আপনাকে কীভাবে সাহায্য করতে পারি?"})
+            # শুরুর শুভেচ্ছা বার্তা
+            st.session_state.messages.append({"role": "assistant", "content": "হ্যালো! আমি LumiAI। আমাকে তৈরি করেছেন এসইও বিশেষজ্ঞ সাব্বির আহমেদ। আমি আপনাকে কীভাবে সাহায্য করতে পারি?"})
 
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
@@ -32,8 +32,9 @@ if api_key:
                 st.markdown(prompt)
 
             # AI-কে আপনার পরিচয় শিখিয়ে দেওয়ার ইন্সট্রাকশন
-            system_instruction = "Your name is LumiAI. You are a helpful AI assistant created by Sabbir Ahmed, who is a professional SEO expert from Bangladesh. Always be polite and remember your creator."
+            system_instruction = "Your name is LumiAI. You are a helpful AI assistant created by Sabbir Ahmed, who is a professional SEO expert from Bangladesh. Always remember your creator."
             
+            # আমরা এখানে gemini-1.5-flash ব্যবহার করছি কারণ এটির ফ্রি লিমিট বেশি
             response = client.models.generate_content(
                 model="gemini-1.5-flash", 
                 contents=f"{system_instruction}\n\nUser: {prompt}"
@@ -44,6 +45,6 @@ if api_key:
             st.session_state.messages.append({"role": "assistant", "content": response.text})
             
     except Exception as e:
-        st.error("দুঃখিত, একটি কারিগরি সমস্যা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।")
+        st.error("দুঃখিত, গুগল এপিআই-তে কোটা সমস্যার কারণে উত্তর দিতে পারছি না। ১০-১৫ মিনিট পর আবার চেষ্টা করুন।")
 else:
-    st.info("অ্যাপটি চালু করতে Streamlit Secrets-এ API Key যোগ করুন।")
+    st.info("অ্যাপটি সচল করতে আপনার API Key সেটিংস চেক করুন।")
